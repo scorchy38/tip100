@@ -1,0 +1,206 @@
+import 'package:tip100/logic/bloc/add_case_bloc/add_case_bloc.dart';
+import 'package:tip100/logic/bloc/add_hearing_bloc/add_hearing_bloc.dart';
+import 'package:tip100/logic/bloc/add_lawyer_bloc/add_lawyer_bloc.dart';
+import 'package:tip100/logic/bloc/all_cases_bloc/all_cases_bloc.dart';
+import 'package:tip100/logic/bloc/all_cases_details_bloc/all_cases_details_bloc.dart';
+import 'package:tip100/logic/bloc/all_cases_details_bloc/all_cases_details_repository.dart';
+import 'package:tip100/logic/bloc/all_cases_filters_bloc/all_cases_filters_repository.dart';
+import 'package:tip100/logic/bloc/all_cases_bloc/all_cases_repository.dart';
+import 'package:tip100/logic/bloc/case_explorer_bloc/case_explorer_bloc.dart';
+import 'package:tip100/logic/bloc/case_explorer_bloc/case_explorer_repository.dart';
+import 'package:tip100/logic/bloc/case_explorer_details_bloc/case_explorer_details_bloc.dart';
+import 'package:tip100/logic/bloc/case_explorer_details_bloc/case_explorer_details_repository.dart';
+import 'package:tip100/logic/bloc/cause_list_filters_bloc/cause_list_filters_bloc.dart';
+import 'package:tip100/logic/bloc/cause_list_filters_bloc/cause_list_filters_repository.dart';
+import 'package:tip100/logic/bloc/cause_list_free_text_bloc/cause_list_free_text_repository.dart';
+import 'package:tip100/logic/bloc/cause_list_pdf_bloc/cause_list_pdf_repository.dart';
+import 'package:tip100/logic/bloc/daily_orders_bloc/daily_orders_bloc.dart';
+import 'package:tip100/logic/bloc/daily_orders_bloc/daily_orders_repository.dart';
+import 'package:tip100/logic/bloc/dashboard_graphs_bloc/basic_graphs_bloc.dart';
+import 'package:tip100/logic/bloc/dashboard_graphs_bloc/basic_graphs_repository.dart';
+import 'package:tip100/logic/bloc/judgements_bloc/judgements_bloc.dart';
+import 'package:tip100/logic/bloc/judgements_bloc/judgements_repository.dart';
+import 'package:tip100/logic/bloc/my_counsel_bloc/my_counsel_bloc.dart';
+import 'package:tip100/logic/bloc/my_counsel_bloc/my_counsel_repository.dart';
+import 'package:tip100/logic/bloc/my_counsel_details_bloc/my_counsel_details_bloc.dart';
+import 'package:tip100/logic/bloc/my_counsel_details_bloc/my_counsel_details_repository.dart';
+import 'package:tip100/logic/cubit/switch_cubit.dart';
+import 'package:tip100/screens/entrypoint/entrypoint_ui.dart';
+import 'package:tip100/size_config.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'core/themes/app_themes.dart';
+import 'logic/bloc/all_cases_filters_bloc/all_cases_filters_bloc.dart';
+import 'logic/bloc/cause_list_free_text_bloc/cause_list_free_text_bloc.dart';
+import 'logic/bloc/cause_list_pdf_bloc/cause_list_pdf_bloc.dart';
+import 'logic/bloc/singin_repository.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<SigninRepository>(
+          create: (context) => SigninRepository(),
+        ),
+        RepositoryProvider<AllCasesRepository>(
+          create: (context) => AllCasesRepository(),
+        ),
+        RepositoryProvider<MyCounselRepository>(
+          create: (context) => MyCounselRepository(),
+        ),
+        RepositoryProvider<AllCasesFiltersRepository>(
+          create: (context) => AllCasesFiltersRepository(),
+        ),
+        RepositoryProvider<BasicGraphsRepository>(
+          create: (context) => BasicGraphsRepository(),
+        ),
+        RepositoryProvider<CaseExplorerDetailsRepository>(
+          create: (context) => CaseExplorerDetailsRepository(),
+        ),
+        RepositoryProvider<CaseExplorerRepository>(
+          create: (context) => CaseExplorerRepository(),
+        ),
+        RepositoryProvider<CauseListPDFRepository>(
+          create: (context) => CauseListPDFRepository(),
+        ),
+        RepositoryProvider<CauseListFreeTextRepository>(
+          create: (context) => CauseListFreeTextRepository(),
+        ),
+        RepositoryProvider<JudgementsRepository>(
+          create: (context) => JudgementsRepository(),
+        ),
+        RepositoryProvider<DailyOrdersRepository>(
+          create: (context) => DailyOrdersRepository(),
+        ),
+        RepositoryProvider<AllCasesDetailsRepository>(
+          create: (context) => AllCasesDetailsRepository(),
+        ),
+        RepositoryProvider<CauseListFiltersRepository>(
+          create: (context) => CauseListFiltersRepository(),
+        ),
+        RepositoryProvider<MyCounselDetailsRepository>(
+          create: (context) => MyCounselDetailsRepository(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<SwitchCubit>(
+            create: (context) => SwitchCubit(),
+            lazy: false,
+          ),
+          // BlocProvider<MessageCubit>(
+          //   create: (context) => MessageCubit(
+          //     repository: AnnouncementsRepository(
+          //       Dio(),
+          //     ),
+          //   ),
+          //   lazy: false,
+          // ),
+          //
+          BlocProvider<AllCasesBloc>(
+            create: (context) => AllCasesBloc(
+                allCasesRepository: context.read<AllCasesRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<AddHearingBloc>(
+            create: (context) => AddHearingBloc(),
+            lazy: false,
+          ),
+          BlocProvider<CaseExplorerBloc>(
+            create: (context) => CaseExplorerBloc(
+                caseExplorerRepository: context.read<CaseExplorerRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<MyCounselDetailsBloc>(
+            create: (context) => MyCounselDetailsBloc(
+                myCounselDetailsRepository:
+                    context.read<MyCounselDetailsRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<CaseExplorerDetailsBloc>(
+            create: (context) => CaseExplorerDetailsBloc(
+                caseExplorerDetailsRepository:
+                    context.read<CaseExplorerDetailsRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<MyCounselBloc>(
+            create: (context) => MyCounselBloc(
+                myCounselRepository: context.read<MyCounselRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<BasicGraphsBloc>(
+            create: (context) => BasicGraphsBloc(
+                basicGraphsRepository: context.read<BasicGraphsRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<CauseListPDFBloc>(
+            create: (context) => CauseListPDFBloc(
+                causeListPDFRepository: context.read<CauseListPDFRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<CauseListFreeTextBloc>(
+            create: (context) => CauseListFreeTextBloc(
+                causeListFreeTextRepository:
+                    context.read<CauseListFreeTextRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<AddCaseBloc>(
+            create: (context) => AddCaseBloc(),
+            lazy: false,
+          ),
+          BlocProvider<AddLawyerBloc>(
+            create: (context) => AddLawyerBloc(),
+            lazy: false,
+          ),
+          BlocProvider<AllCasesFiltersBloc>(
+            create: (context) => AllCasesFiltersBloc(
+                allCasesFiltersRepository:
+                    context.read<AllCasesFiltersRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<JudgementsBloc>(
+            create: (context) => JudgementsBloc(
+                judgementsRepository: context.read<JudgementsRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<DailyOrdersBloc>(
+            create: (context) => DailyOrdersBloc(
+                dailyOrdersRepository: context.read<DailyOrdersRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<AllCasesDetailsBloc>(
+            create: (context) => AllCasesDetailsBloc(
+                allCasesDetailsRepository:
+                    context.read<AllCasesDetailsRepository>()),
+            lazy: false,
+          ),
+          BlocProvider<CauseListFiltersBloc>(
+            create: (context) => CauseListFiltersBloc(
+                causeListFiltersRepository:
+                    context.read<CauseListFiltersRepository>()),
+            lazy: false,
+          ),
+          //
+          // BlocProvider<SettingsBloc>(
+          //   create: (context) => SettingsBloc(
+          //       settingsRepository: context.read<SettingsRepository>()),
+          //   lazy: false,
+          // ),
+        ],
+        child: MaterialApp(
+          title: 'TIP100',
+          theme: AppThemes.light,
+          home: const EntryPointUI(),
+        ),
+      ),
+    );
+  }
+}

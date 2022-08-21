@@ -1,0 +1,77 @@
+name: tip100
+description: TIP 100 Mobile Application.
+
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  flutter_bloc: ^7.3.0
+  font_awesome_flutter: ^10.1.0
+  percent_indicator: ^4.2.2
+  bloc: ^7.2.0
+  dio: ^4.0.6
+  eva_icons_flutter: ^3.1.0
+  shared_preferences: ^2.0.13
+  flutter_svg: ^1.0.3
+  cached_network_image: ^3.2.0
+  animations: ^2.0.2
+  fl_chart: ^0.50.6
+  expandable: ^5.0.1
+  syncfusion_flutter_gauges: ^20.1.57
+  sticky_headers: ^0.2.0
+  super_tooltip: ^1.0.1
+  searchfield: ^0.6.5
+  dropdown_search: ^3.0.1
+  customizable_multiselect_field: ^1.0.1
+  url_launcher: ^6.1.4
+#  timelines: ^0.1.0
+  file_picker: ^4.6.1
+  fluttertoast: ^8.0.9
+  flutter_datetime_picker: ^1.5.1
+  timeline_list: ^0.0.6
+  path: ^1.8.0
+
+#  scrollable_positioned_list: ^0.3.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+  flutter_native_splash: ^2.1.6
+
+
+flutter_native_splash:
+
+  background_image: "assets/logo/splash.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icon/
+    - assets/bars/
+    - assets/bars/notice.svg
+    - assets/images/
+    - assets/buttons/
+
+
+  fonts:
+    - family: ProductSans
+      fonts:
+        - asset: assets/fonts/bold_italic.ttf
+        - asset: assets/fonts/bold.ttf
+          weight: 700
+        - asset: assets/fonts/italic.ttf
+          style: italic
+        - asset: assets/fonts/regular.ttf
