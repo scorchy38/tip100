@@ -23,7 +23,7 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
       yield state.copyWith(password: event.password);
     } else if (event is SigninSubmitted) {
       yield state.copyWith(formSubmissionStatus: FormSubmitting());
-      var res = await signinRepository.login(state.username, state.password);
+      var res = await signinRepository.login(state.username);
       print(res);
       if (res == "success")
         yield state.copyWith(formSubmissionStatus: SubmissionSuccess());

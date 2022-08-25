@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../logic/bloc/add_case_bloc/add_case_bloc.dart';
 import '../../size_config.dart';
 import '../constants/app_colors.dart';
 
@@ -66,10 +67,12 @@ class _AppLargeDropdownState extends State<AppLargeDropdown> {
                         child: Text(
                           value,
                           maxLines: 1,
-                          style:  TextStyle(
+                          style: TextStyle(
                               fontSize: 14,
                               overflow: TextOverflow.ellipsis,
-                              color: !changeColor ? AppColors.appGrey : Colors.black,
+                              color: !changeColor
+                                  ? AppColors.appGrey
+                                  : Colors.black,
                               fontWeight: FontWeight.w500),
                         ),
                       ));
@@ -82,6 +85,16 @@ class _AppLargeDropdownState extends State<AppLargeDropdown> {
                     widget.dropdownValue = newValue ?? widget.dropdownValue;
                     widget.controller?.text =
                         (newValue ?? widget.dropdownValue)!;
+                    if (widget.label == 'Crime Category')
+                      context.read<AddCaseBloc>().add(EventAddDescription(
+                          description: widget.controller!.text));
+                    else if (widget.label == 'Priority(Optional)')
+                      context.read<AddCaseBloc>().add(
+                          EventAddPriority(priority: widget.controller!.text));
+                    else if (widget.label == 'Time(Optional)')
+                      context
+                          .read<AddCaseBloc>()
+                          .add(EventAddTitle(title: widget.controller!.text));
                     if (widget.controller?.text.compareTo(widget.label!) == 0)
                       context
                           .read<SwitchCubit>()

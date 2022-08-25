@@ -7,6 +7,7 @@ import 'package:tip100/screens/litigations/section_pages/case_explorer/component
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../model/all_cases_model.dart';
 import 'components/case_explorer_header.dart';
 
 class CaseExplorerPage extends StatefulWidget {
@@ -46,7 +47,7 @@ class _CaseExplorerPageState extends State<CaseExplorerPage> {
                     // width: MediaQuery.of(context).size.width * 0.9,
                     child: Builder(
                       builder: (context) {
-                        List<CaseExplorerModel>? cases = [];
+                        List<AllCasesModel>? cases = [];
                         cases =
                             context.watch<CaseExplorerBloc>().state.all_cases;
                         totalCount =
@@ -85,19 +86,20 @@ class _CaseExplorerPageState extends State<CaseExplorerPage> {
                             child: CircularProgressIndicator(),
                           );
                         } else {
-                          return ListView.builder(
-
-                              // itemScrollController: _scrollController,
-
-                              shrinkWrap: true,
-                              itemCount: cases?.length,
-                              itemBuilder: (context, index) => CaseCard(
-                                  caseNumber: cases![index].cino.toString(),
-                                  caseId: cases[index].id!,
-                                  complaint: cases[index].complainant!,
-                                  court: cases[index].courtData!.name!,
-                                  respondent: cases[index].respondent!,
-                                  dof: cases[index].dateOfFiling!));
+                          return Container();
+                          // return ListView.builder(
+                          //
+                          //     // itemScrollController: _scrollController,
+                          //
+                          //     shrinkWrap: true,
+                          //     itemCount: cases?.length,
+                          //     itemBuilder: (context, index) => CaseCard(
+                          //         caseNumber: cases![index].cino.toString(),
+                          //         caseId: cases[index].id!,
+                          //         complaint: cases[index].complainant!,
+                          //         court: cases[index].courtData!.name!,
+                          //         respondent: cases[index].respondent!,
+                          //         dof: cases[index].dateOfFiling!));
                         }
                       },
                     ),

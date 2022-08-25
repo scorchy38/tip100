@@ -15,12 +15,13 @@ class AppTextField extends StatefulWidget {
   final TextEditingController controller;
   final String title;
   final double maxLines;
-   String helper = " ";
+  String helper = " ";
+  bool showCopyIcon = false;
   final Function(String?)? onChanged;
 
   bool label;
   AppTextField(this.label, this.controller, this.title, this.maxLines,
-      {Key? key, this.onChanged,  this.helper = " "})
+      {Key? key, this.onChanged, this.helper = " ", this.showCopyIcon = false})
       : super(key: key);
 
   @override
@@ -67,6 +68,13 @@ class _AppTextFieldState extends State<AppTextField> {
           softWrap: true,
         )),
   );
+  Future<void> _copyToClipboard() async {
+    await Clipboard.setData(ClipboardData(text: widget.controller.text));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('Copied to clipboard'),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -91,58 +99,115 @@ class _AppTextFieldState extends State<AppTextField> {
           minLines: widget.maxLines.toInt(),
           maxLines: widget.maxLines.toInt() + 1,
           enabled: true,
+          decoration: widget.showCopyIcon
+              ? InputDecoration(
+                  icon: IconButton(
+                    icon: const Icon(Icons.copy),
+                    onPressed: _copyToClipboard,
+                    padding: EdgeInsets.all(0),
+                  ),
+                  labelText: widget.label ? widget.title : '',
+                  // suffixIcon: !widget.label
+                  //     ? Padding(
+                  //         padding: const EdgeInsets.symmetric(
+                  //             horizontal: 8.0, vertical: 10),
+                  //         child: Builder(builder: (context) {
+                  //           return GestureDetector(
+                  //             onTapDown: (details) {
+                  //               _start = 5;
+                  //               startTimer();
+                  //               tooltip.show(context);
+                  //             },
+                  //             onTapUp: (details) {
+                  //               if (_start != 0) tooltip.close();
+                  //             },
+                  //             onTapCancel: () {
+                  //               if (_start != 0) tooltip.close();
+                  //             },
+                  //             child: SvgPicture.asset(
+                  //               AppIcons.info,
+                  //               alignment: Alignment.bottomCenter,
+                  //             ),
+                  //           );
+                  //         }),
+                  //       )
+                  //     : Container(
+                  //         height: 1,
+                  //         width: 1,
+                  //       ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 9.0, horizontal: 0),
+                  fillColor: Colors.white,
+                  filled: true,
+                  helperText: widget.helper,
+                  helperMaxLines: 2,
+                  hintText: !widget.label ? widget.title : '',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.primary),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIconConstraints: const BoxConstraints(maxWidth: 48),
+                )
+              : InputDecoration(
+                  labelText: widget.label ? widget.title : '',
+                  // suffixIcon: !widget.label
+                  //     ? Padding(
+                  //         padding: const EdgeInsets.symmetric(
+                  //             horizontal: 8.0, vertical: 10),
+                  //         child: Builder(builder: (context) {
+                  //           return GestureDetector(
+                  //             onTapDown: (details) {
+                  //               _start = 5;
+                  //               startTimer();
+                  //               tooltip.show(context);
+                  //             },
+                  //             onTapUp: (details) {
+                  //               if (_start != 0) tooltip.close();
+                  //             },
+                  //             onTapCancel: () {
+                  //               if (_start != 0) tooltip.close();
+                  //             },
+                  //             child: SvgPicture.asset(
+                  //               AppIcons.info,
+                  //               alignment: Alignment.bottomCenter,
+                  //             ),
+                  //           );
+                  //         }),
+                  //       )
+                  //     : Container(
+                  //         height: 1,
+                  //         width: 1,
+                  //       ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 9.0, horizontal: 10),
+                  fillColor: Colors.white,
+                  filled: true,
+                  helperText: widget.helper,
+                  helperMaxLines: 2,
 
-          decoration: InputDecoration(
-            labelText: widget.label ? widget.title : '',
-            // suffixIcon: !widget.label
-            //     ? Padding(
-            //         padding: const EdgeInsets.symmetric(
-            //             horizontal: 8.0, vertical: 10),
-            //         child: Builder(builder: (context) {
-            //           return GestureDetector(
-            //             onTapDown: (details) {
-            //               _start = 5;
-            //               startTimer();
-            //               tooltip.show(context);
-            //             },
-            //             onTapUp: (details) {
-            //               if (_start != 0) tooltip.close();
-            //             },
-            //             onTapCancel: () {
-            //               if (_start != 0) tooltip.close();
-            //             },
-            //             child: SvgPicture.asset(
-            //               AppIcons.info,
-            //               alignment: Alignment.bottomCenter,
-            //             ),
-            //           );
-            //         }),
-            //       )
-            //     : Container(
-            //         height: 1,
-            //         width: 1,
-            //       ),
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 9.0, horizontal: 10),
-            fillColor: Colors.white,
-            filled: true,
-            helperText: widget.helper,
-            helperMaxLines: 2,
-            hintText: !widget.label ? widget.title : '',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: AppColors.primary),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
-            ),
-            prefixIconConstraints: const BoxConstraints(maxWidth: 48),
-          ),
+                  hintText: !widget.label ? widget.title : '',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: AppColors.primary),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIconConstraints: const BoxConstraints(maxWidth: 48),
+                ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:tip100/core/components/card_tags.dart';
 import 'package:tip100/core/constants/app_colors.dart';
@@ -8,15 +9,19 @@ import 'package:tip100/screens/litigations/section_pages/case_explorer/component
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/components/icon_button_with_text.dart';
 import '../../../../../core/constants/app_icons.dart';
 import '../../../../../logic/bloc/add_case_bloc/add_case_bloc.dart';
+import '../../../../home/components/chat_page.dart';
 import 'add_new_case.dart';
 
 class CaseCard extends StatelessWidget {
   final String caseNumber, complaint, caseStage, court, pdoh, ndoh, ndohRemark;
   final int caseId;
+  final Timestamp dateOfIncident;
+  final List mediaURL;
 
   const CaseCard(
       {Key? key,
@@ -27,7 +32,9 @@ class CaseCard extends StatelessWidget {
       required this.pdoh,
       required this.ndoh,
       required this.ndohRemark,
-      required this.caseId})
+      required this.dateOfIncident,
+      required this.caseId,
+      required this.mediaURL})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -35,8 +42,6 @@ class CaseCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppDefaults.padding / 2),
       child: InkWell(
         onTap: () {
-
-
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -124,7 +129,6 @@ class CaseCard extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -146,7 +150,9 @@ class CaseCard extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            pdoh,
+                            DateFormat.yMMMd()
+                                .add_jm()
+                                .format(dateOfIncident.toDate()),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
@@ -175,7 +181,7 @@ class CaseCard extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            ndoh,
+                            caseStage,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
@@ -192,37 +198,45 @@ class CaseCard extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-
                   Divider(),
-                Row(
-                  children: [
-                    IconButtonWithText(
-                      onTap: () {
-
-                        launch('https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/videos%2FWhatsApp%20Video%202022-08-19%20at%2010.43.09%20PM.mp4?alt=media&token=ba9124a3-05ef-4bbd-b8c7-b906acef8667');
-                      },
-                      buttonColor: AppColors.primary,
-                      buttonIcon: AppIcons.addButton,
-                      icon: EvaIcons.image,
-                      buttonText: 'Related Media',
-                    ),
-                    SizedBox(
-                      width: 6.7,
-                    ),
-                    IconButtonWithText(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const AddNewCase()));
-                      },
-                      buttonColor: AppColors.primary,
-                      buttonIcon: AppIcons.addButton,
-                      icon: EvaIcons.infoOutline,
-                      buttonText: 'Share Information',
-                    ),
-                  ],
-                )
+                  Row(
+                    children: [
+                      IconButtonWithText(
+                        onTap: () {
+                          mediaURL.forEach((element) {
+                            launch(element);
+                          });
+                        },
+                        buttonColor: AppColors.primary,
+                        buttonIcon: AppIcons.addButton,
+                        icon: EvaIcons.image,
+                        buttonText: 'Related Media',
+                      ),
+                      SizedBox(
+                        width: 6.7,
+                      ),
+                      IconButtonWithText(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ChatPage(
+                                      collectionName: 'alertChats',
+                                      peerNickname: 'POLICE',
+                                      peerAvatar:
+                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/Upplogo.png?alt=media&token=bad7f7fd-d75a-4764-9d6c-5e2d56a6e65c',
+                                      peerId: 'POLICE',
+                                      userAvatar:
+                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
+                                      tipID: '2')));
+                        },
+                        buttonColor: AppColors.primary,
+                        buttonIcon: AppIcons.addButton,
+                        icon: EvaIcons.infoOutline,
+                        buttonText: 'Share Information',
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),

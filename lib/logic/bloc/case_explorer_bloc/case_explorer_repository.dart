@@ -49,6 +49,40 @@ class CaseExplorerRepository {
     yield res;
   }
 
+  Stream<List<AllCasesModel>> getAlerts() async* {
+    List<AllCasesModel> res = [];
+    try {
+      final SharedPreferences _prefs = await SharedPreferences.getInstance();
+      var requestBody = {"page": "1", "skip": "0", "limit": "50"};
+      Dio dio = new Dio();
+      // dio.options.headers['content-type'] = 'application/json';
+      // dio.options.headers['authorization'] = 'JWT ${_prefs.getString('token')}';
+      print(
+          "https://tip100.herokuapp.com/getAllTips?uid=${_prefs.getString('token')}");
+      Response response =
+          await dio.get('https://tip100.herokuapp.com/getAllTips');
+
+      var resData = response.data;
+      print('Cases List Length');
+      print(resData["chain"].toList().length);
+      // print(resData);
+
+      if (response.statusCode == 200) {
+        List cases = resData["chain"].toList();
+
+        cases.forEach((element) {
+          print(element);
+          res.add(AllCasesModel.fromJson(element));
+        });
+      } else {}
+    } catch (e) {
+      print('Error');
+      print(e);
+    }
+
+    yield res;
+  }
+
   Stream<int> getCasesCount() async* {
     int res = 0;
     try {

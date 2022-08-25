@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tip100/model/counsel_case_item.dart';
+
 Map m = {
   "case_id": 2143513,
   "case_no": "CC/23/2020",
@@ -32,7 +35,7 @@ class AllCasesModel {
   String? stage;
   String? client;
   String? court;
-  String? city;
+  int? city;
   String? type;
   String? court_name;
   bool? case_active;
@@ -42,6 +45,8 @@ class AllCasesModel {
   bool? ticket_active;
   int? court_data;
   String? client_side;
+  Timestamp? dateOfIncident;
+  List? mediaURL;
 
   AllCasesModel(
       {this.title,
@@ -63,29 +68,34 @@ class AllCasesModel {
       this.region,
       this.stage,
       this.ticket_active,
+      this.mediaURL,
+      this.dateOfIncident,
       this.tracking});
 
   AllCasesModel.fromJson(Map<String, dynamic> json) {
-    case_id = json['case_id'];
-    case_no = json['case_no'].toString();
-    title = json['title'].toString();
-    ndoh = DOH.fromJson(json['ndoh']);
-    region = json['region'].toString();
-    loan_no = json['loan_no'].toString();
-    pdoh = DOH.fromJson(json['pdoh']);
-    stage = json['stage'].toString();
-    client = json['client'].toString();
-    court = json['court'].toString();
-    city = json['city'].toString();
-    type = json['type'].toString();
-    court_name = json['court_name'].toString();
-    case_active = json['case_active'];
-    activity_status = json['activity_status'];
-    tracking = json['tracking'];
-    action = json['action'].toString();
-    ticket_active = json['ticket_active'];
-    court_data = json['court_data'];
-    client_side = json['client_side'].toString();
+    case_id = json['index'];
+    case_no = json['crimeType'].toString();
+    title = json['address'].toString();
+    ndoh = DOH(status: 10, date: "", remarks: "");
+    region = "null";
+    loan_no = "null";
+    pdoh = DOH(status: 10, date: "", remarks: "");
+    stage = json['crimeTime'].toString();
+    client = "null";
+    court = json['description'].toString();
+    city = json['isAlert'];
+    type = "null";
+    court_name = json['description'].toString();
+    mediaURL = json['mediaURL'];
+    dateOfIncident =
+        Timestamp.fromMillisecondsSinceEpoch(int.parse(json['dateOfIncident']));
+    case_active = true;
+    activity_status = 10;
+    tracking = true;
+    action = "null";
+    ticket_active = true;
+    court_data = 20;
+    client_side = "null";
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -102,6 +112,8 @@ class AllCasesModel {
     data['city'] = this.city;
     data['type'] = this.type;
     data['court_name'] = this.court_name;
+    data['dateOfIncident'] =
+        this.dateOfIncident!.millisecondsSinceEpoch.toString();
     data['case_active'] = this.case_active;
     data['activity_status'] = this.activity_status;
     data['tracking'] = this.tracking;
@@ -109,6 +121,7 @@ class AllCasesModel {
     data['ticket_active'] = this.ticket_active;
     data['court_data'] = this.court_data;
     data['client_side'] = this.client_side;
+    data['mediaURL'] = this.mediaURL;
     return data;
   }
 }

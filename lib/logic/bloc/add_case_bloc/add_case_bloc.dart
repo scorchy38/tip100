@@ -63,24 +63,35 @@ class AddCaseBloc extends Bloc<AddCaseEvent, AddCaseState> {
         log(state.case_type.toString());
         log(state.city.toString());
         log(state.court.toString());
-        FormData formData = FormData.fromMap({
-          if (state.priority != 'NULL') 'priority': state.priority,
-          if (state.case_type != MAXINT) 'case_type': state.case_type,
-          'title': state.title,
-          if (state.case_type != MAXINT) 'court': state.court,
-          if (state.case_type != MAXINT) 'city': state.city,
-          'description': state.description,
-          'is_alloted': true
-        });
 
-        print(formData.fields);
+        // print(formData.fields);
         Dio dio = Dio();
-        dio.options.headers["Authorization"] =
-            'JWT ${_prefs.getString('token')}';
-
-        // Response response = await dio
-        //     .post('https://corporate.legistify.com/api/case/', data: formData);
-        // print(response.data);
+        // dio.options.headers["Authorization"] =
+        //     'JWT ${_prefs.getString('token')}';
+        print({
+          "crimeType": state.description,
+          "description": event.description,
+          "mediaURL": [event.fileRef],
+          "urgency": state.priority,
+          "crimeTime": state.title,
+          "dateOfIncident": event.dateOfIncident,
+          "score": "0",
+          "uid": "${_prefs.getString('token')}",
+          "address": event.location
+        });
+        Response response =
+            await dio.post('https://tip100.herokuapp.com/addTip', data: {
+          "crimeType": state.description,
+          "description": event.description,
+          "mediaURL": [event.fileRef],
+          "urgency": state.priority,
+          "crimeTime": state.title,
+          "dateOfIncident": event.dateOfIncident,
+          "score": "0",
+          "uid": "${_prefs.getString('token')}",
+          "address": event.location
+        });
+        print(response.data);
 
         yield state.copyWith(formSubmissionStatus: SubmissionSuccess());
       } catch (e) {

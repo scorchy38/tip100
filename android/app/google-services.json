@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "603474913748",
+    "project_id": "tip100-f1628",
+    "storage_bucket": "tip100-f1628.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:603474913748:android:9006c084f0aa311bdfce41",
+        "android_client_info": {
+          "package_name": "com.definitelynotpros.tip100"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "603474913748-k1gv28k6rigbikq3vothvqdjtg7u5m1b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXNZCwKUH27mXhnft-gbmOeDN6MvIlMN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "603474913748-k1gv28k6rigbikq3vothvqdjtg7u5m1b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

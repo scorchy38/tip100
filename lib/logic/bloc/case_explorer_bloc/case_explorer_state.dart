@@ -1,7 +1,7 @@
 part of 'case_explorer_bloc.dart';
 
 class CaseExplorerState {
-  List<CaseExplorerModel>? all_cases;
+  List<AllCasesModel>? all_cases;
   int? currPage;
   int? currSkip;
   int? currLimit;
@@ -23,7 +23,7 @@ class CaseExplorerState {
       this.keyword_type = 0});
 
   CaseExplorerState copyWith({
-    List<CaseExplorerModel>? all_cases,
+    List<AllCasesModel>? all_cases,
     int? currPage,
     int? currSkip,
     int? currLimit,
@@ -62,7 +62,7 @@ class CaseExplorerState {
 
   factory CaseExplorerState.fromMap(Map<String, dynamic> map) {
     return CaseExplorerState(
-      all_cases: List<CaseExplorerModel>.from(
+      all_cases: List<AllCasesModel>.from(
           map['all_cases']?.map((x) => AllCasesModel.fromJson(x))),
       currLimit: map['currLimit'],
       currPage: map['currPage'],

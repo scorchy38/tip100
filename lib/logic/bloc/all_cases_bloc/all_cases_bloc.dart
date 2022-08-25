@@ -44,28 +44,26 @@ class AllCasesBloc extends Bloc<AllCasesEvent, AllCasesState> {
     if (event is AllCasesGetInitialCases) {
       await allCasesRepository.getInitial50Cases().listen((events) {
         allCases = events;
-        allCasesRepository.getCasesCount().listen((count) async {
-          casesCount = await count;
-          if (casesCount == 0) {
-            print('Hitting init with true and 0');
-            emit(AllCasesState(
-                all_cases: allCases,
-                currLimit: 50,
-                currPage: 1,
-                currSkip: 0,
-                totalCases: casesCount,
-                noCasesFound: true));
-          } else {
-            print('Hitting init with false and 50');
-            emit(AllCasesState(
-                all_cases: allCases,
-                currLimit: 50,
-                currPage: 1,
-                currSkip: 0,
-                totalCases: casesCount,
-                noCasesFound: false));
-          }
-        });
+        casesCount = allCases.length;
+        if (casesCount == 0) {
+          print('Hitting init with true and 0');
+          emit(AllCasesState(
+              all_cases: allCases,
+              currLimit: 50,
+              currPage: 1,
+              currSkip: 0,
+              totalCases: casesCount,
+              noCasesFound: true));
+        } else {
+          print('Hitting init with false and 50');
+          emit(AllCasesState(
+              all_cases: allCases,
+              currLimit: 50,
+              currPage: 1,
+              currSkip: 0,
+              totalCases: casesCount,
+              noCasesFound: false));
+        }
       });
       log(allCases.toString());
     }

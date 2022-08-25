@@ -12,21 +12,24 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/components/icon_button_with_text.dart';
 import '../../../../../core/constants/app_icons.dart';
 import '../../../../../logic/bloc/add_case_bloc/add_case_bloc.dart';
+import 'chat_page.dart';
 
 class SubmittedTipsCard extends StatelessWidget {
   final String caseNumber, complaint, caseStage, court, pdoh, ndoh, ndohRemark;
   final int caseId;
+  final List mediaURL;
 
   const SubmittedTipsCard(
       {Key? key,
-        required this.caseNumber,
-        required this.complaint,
-        required this.court,
-        required this.caseStage,
-        required this.pdoh,
-        required this.ndoh,
-        required this.ndohRemark,
-        required this.caseId})
+      required this.caseNumber,
+      required this.complaint,
+      required this.court,
+      required this.caseStage,
+      required this.pdoh,
+      required this.ndoh,
+      required this.ndohRemark,
+      required this.mediaURL,
+      required this.caseId})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -34,8 +37,6 @@ class SubmittedTipsCard extends StatelessWidget {
       padding: const EdgeInsets.all(AppDefaults.padding / 2),
       child: InkWell(
         onTap: () {
-
-
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -47,7 +48,7 @@ class SubmittedTipsCard extends StatelessWidget {
           // elevation: 4,
           // color: AppColors.white,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: SizedBox(
@@ -123,7 +124,6 @@ class SubmittedTipsCard extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -137,9 +137,9 @@ class SubmittedTipsCard extends StatelessWidget {
                                 .textTheme
                                 .bodyText1
                                 ?.copyWith(
-                                fontSize: 12,
-                                color: AppColors.appGrey,
-                                fontWeight: FontWeight.w500),
+                                    fontSize: 12,
+                                    color: AppColors.appGrey,
+                                    fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 4,
@@ -150,9 +150,9 @@ class SubmittedTipsCard extends StatelessWidget {
                                 .textTheme
                                 .bodyText1
                                 ?.copyWith(
-                                fontSize: 14,
-                                color: AppColors.textColorBlack,
-                                fontWeight: FontWeight.w500),
+                                    fontSize: 14,
+                                    color: AppColors.textColorBlack,
+                                    fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -166,22 +166,22 @@ class SubmittedTipsCard extends StatelessWidget {
                                 .textTheme
                                 .bodyText1
                                 ?.copyWith(
-                                fontSize: 12,
-                                color: AppColors.appGrey,
-                                fontWeight: FontWeight.w500),
+                                    fontSize: 12,
+                                    color: AppColors.appGrey,
+                                    fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(
                             height: 4,
                           ),
                           Text(
-                            ndoh,
+                            caseStage,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
                                 ?.copyWith(
-                                fontSize: 14,
-                                color: AppColors.textColorBlack,
-                                fontWeight: FontWeight.w500),
+                                    fontSize: 14,
+                                    color: AppColors.textColorBlack,
+                                    fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
@@ -191,14 +191,16 @@ class SubmittedTipsCard extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-
                   Divider(),
                   Row(
                     children: [
                       IconButtonWithText(
                         onTap: () {
-
-                          launch('https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/videos%2FWhatsApp%20Video%202022-08-19%20at%2010.43.09%20PM.mp4?alt=media&token=ba9124a3-05ef-4bbd-b8c7-b906acef8667');
+                          mediaURL.forEach((element) {
+                            launch(element);
+                          });
+                          // launch(
+                          //     'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/videos%2FWhatsApp%20Video%202022-08-19%20at%2010.43.09%20PM.mp4?alt=media&token=ba9124a3-05ef-4bbd-b8c7-b906acef8667');
                         },
                         buttonColor: AppColors.primary,
                         buttonIcon: AppIcons.addButton,
@@ -210,10 +212,18 @@ class SubmittedTipsCard extends StatelessWidget {
                       ),
                       IconButtonWithText(
                         onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => const AddNewCase()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ChatPage(
+                                      collectionName: "messages",
+                                      peerNickname: 'POLICE',
+                                      peerAvatar:
+                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/Upplogo.png?alt=media&token=bad7f7fd-d75a-4764-9d6c-5e2d56a6e65c',
+                                      peerId: 'POLICE',
+                                      userAvatar:
+                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
+                                      tipID: '2')));
                         },
                         buttonColor: AppColors.primary,
                         buttonIcon: AppIcons.addButton,

@@ -25,8 +25,7 @@ class SignupBloc extends Bloc<SignupEvent, SignUpState> {
     } else if (event is SignupSubmitted) {
       print("Ww");
       yield state.copyWith(formSubmissionStatus: FormSubmitting());
-      dynamic res =
-          await signinRepository.createUser(state.username, state.password);
+      dynamic res = await signinRepository.createUser(' ');
 
       // if (res is UserCredential) {
       //   yield state.copyWith(formSubmissionStatus: SubmissionSuccess());

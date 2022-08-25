@@ -107,7 +107,6 @@ class _AddNewCaseState extends State<AddNewCase> {
             children: [
               Column(
                 children: [
-
                   Padding(
                     padding: EdgeInsets.only(
                         left: AppDefaults.padding,
@@ -269,7 +268,7 @@ class _AddNewCaseState extends State<AddNewCase> {
                           context
                               .read<AddCaseBloc>()
                               .add(EventAddPriority(priority: priority));
-                          context.read<AddCaseBloc>().add(EventSubmitted());
+                          // context.read<AddCaseBloc>().add(EventSubmitted());
                           setState(() {});
                         },
                         child: Card(

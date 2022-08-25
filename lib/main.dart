@@ -1,3 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tip100/logic/bloc/add_case_bloc/add_case_bloc.dart';
 import 'package:tip100/logic/bloc/add_hearing_bloc/add_hearing_bloc.dart';
 import 'package:tip100/logic/bloc/add_lawyer_bloc/add_lawyer_bloc.dart';
@@ -26,6 +29,7 @@ import 'package:tip100/logic/bloc/my_counsel_details_bloc/my_counsel_details_blo
 import 'package:tip100/logic/bloc/my_counsel_details_bloc/my_counsel_details_repository.dart';
 import 'package:tip100/logic/cubit/switch_cubit.dart';
 import 'package:tip100/screens/entrypoint/entrypoint_ui.dart';
+import 'package:tip100/screens/home/components/chat_page.dart';
 import 'package:tip100/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,14 +39,27 @@ import 'logic/bloc/all_cases_filters_bloc/all_cases_filters_bloc.dart';
 import 'logic/bloc/cause_list_free_text_bloc/cause_list_free_text_bloc.dart';
 import 'logic/bloc/cause_list_pdf_bloc/cause_list_pdf_bloc.dart';
 import 'logic/bloc/singin_repository.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final preferences = await StreamingSharedPreferences.instance;
+  // preferences.setString('token', ' ');
+  await Firebase.initializeApp();
+  runApp(MyApp(
+    pref: preferences,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({this.pref, Key? key}) : super(key: key);
+  SharedPreferences? prefs;
+  StreamingSharedPreferences? pref;
 
+  FirebaseFirestore? firebaseFirestore = FirebaseFirestore.instance;
+  FirebaseStorage? firebaseStorage = FirebaseStorage.instance;
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -195,10 +212,20 @@ class MyApp extends StatelessWidget {
           //   lazy: false,
           // ),
         ],
-        child: MaterialApp(
-          title: 'TIP100',
-          theme: AppThemes.light,
-          home: const EntryPointUI(),
+        child: MultiProvider(
+          providers: [
+            Provider<ChatProvider>(
+                create: (_) => ChatProvider(
+                    firebaseStorage: firebaseStorage!,
+                    firebaseFirestore: firebaseFirestore!))
+          ],
+          child: MaterialApp(
+            title: 'TIP100',
+            theme: AppThemes.light,
+            home: EntryPointUI(
+              pref: pref,
+            ),
+          ),
         ),
       ),
     );

@@ -1,34 +1,48 @@
 import 'dart:convert';
 
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 import 'package:tip100/model/app_user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SigninRepository {
-  Future<String> login(String email, String password) async {
+  Future<String> login(String phrase) async {
+    final preferences = await StreamingSharedPreferences.instance;
+
     String res = "";
     try {
-      Map requestBody = {"username": email, "password": password};
+      Map requestBody = {"phrase": phrase};
       Dio dio = new Dio();
-      dio.options.headers['authority'] = 'corporate.legistify.com';
-      Response response = await dio.post(
-          'https://corporate.legistify.com/api-token-auth',
-          data: requestBody);
+      Response response = await dio
+          .post('https://tip100.herokuapp.com/getUserID', data: requestBody);
 
       if (response.statusCode == 200) {
-        Map resData = response.data;
+        var resData = response.data;
 
         res = "success";
-        var appuser = AppUserModel(
-            email: email,
-            user: resData['token']['user'],
-            token: resData['token']['token']);
-        print(appuser.token);
+
         final SharedPreferences _prefs = await SharedPreferences.getInstance();
-        _prefs.setString("token", appuser.token ?? "");
-        _prefs.setString("user_obj", jsonEncode(appuser.toJson()));
-      } else {
-        res = "Something went wrong 1";
+        _prefs.setString("token", resData.toString());
+        preferences.setString('token', resData.toString());
+
+        Response response2 =
+            await dio.get('https://tip100.herokuapp.com/getAllTippers');
+
+        if (response2.statusCode == 200) {
+          List resData2 = response2.data;
+
+          res = "success";
+          resData2.forEach((element) {
+            if (element['uid'] == resData.toString()) {
+              _prefs.setString("score", element['score']);
+              preferences.setString('score', element['score']);
+            }
+          });
+
+          // _prefs.setString("user_obj", jsonEncode(appuser.toJson()));
+        } else {
+          res = "Something went wrong 1";
+        }
       }
     } catch (e) {
       res = "Something went wrong 2";
@@ -39,51 +53,52 @@ class SigninRepository {
     return res;
   }
 
-  Future<dynamic> createUser(String email, String password) async {
-    // try {
-    //   UserCredential res = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-    //   final user = EventUser(email: email);
-
-    //   print(res);
-
-    //   await res.user!.sendEmailVerification();
-
-    //   return res;
-    // } catch (e) {
-    //   return e;
-    // }
+  Future<dynamic> createUser(String phrase) async {
+    final preferences = await StreamingSharedPreferences.instance;
 
     String res = "";
     try {
-      var formData = FormData.fromMap(
-          {'email': email, 'password': password, 'rpass': password});
-      Response response = await Dio()
-          .post('https://nextopay.com/uploop/register', data: formData);
+      Map requestBody = {"phrase": phrase};
+      Dio dio = new Dio();
+      Response registerResponse = await dio
+          .post('https://tip100.herokuapp.com/register', data: requestBody);
+      print(registerResponse.data);
+      Response response = await dio
+          .post('https://tip100.herokuapp.com/getUserID', data: requestBody);
 
-      // if (jsonDecode(response.data)["status"] == "1") {
-      var resData = jsonDecode(response.data);
-      print('response');
-      print(resData);
-      print(formData.fields);
+      if (response.statusCode == 200) {
+        var resData = response.data;
 
-      if (resData["status"] == "1") {
         res = "success";
-        var appuser = AppUserModel.fromJson(resData["data"].toList()[0]);
+
         final SharedPreferences _prefs = await SharedPreferences.getInstance();
-        _prefs.setString("user_id", appuser.token ?? "");
-        _prefs.setString("user_obj", jsonEncode(appuser.toJson()));
-      } else {
-        res = resData["message"];
+        _prefs.setString("token", resData.toString());
+        preferences.setString('token', resData.toString());
+
+        Response response2 =
+            await dio.get('https://tip100.herokuapp.com/getAllTippers');
+
+        if (response2.statusCode == 200) {
+          List resData2 = response2.data;
+
+          res = "success";
+          resData2.forEach((element) {
+            if (element['uid'] == resData.toString()) {
+              _prefs.setString("score", element['score']);
+              preferences.setString('score', element['score']);
+            }
+          });
+
+          // _prefs.setString("user_obj", jsonEncode(appuser.toJson()));
+        } else {
+          res = "Something went wrong 1";
+        }
       }
-      // } else {
-      //   res = "some thing is wrong from us, please try again";
-      //   print(res);
-      // }
     } catch (e) {
-      res = "User Created Successfully";
-      print('Error');
+      res = "Something went wrong 2";
       print(e);
     }
+    print(res);
 
     return res;
   }

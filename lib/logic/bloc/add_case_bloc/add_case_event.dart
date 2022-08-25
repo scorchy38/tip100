@@ -79,6 +79,24 @@ class EventToggleIsAlloted extends AddCaseEvent {
   });
 }
 
-class EventSubmitted extends AddCaseEvent {}
+class EventSubmitted extends AddCaseEvent {
+  String crimeCategory,
+      location,
+      priority,
+      description,
+      time,
+      crimeTime,
+      dateOfIncident,
+      fileRef;
+  EventSubmitted(
+      {required this.crimeCategory,
+      required this.location,
+      required this.priority,
+      required this.description,
+      required this.time,
+      required this.crimeTime,
+      required this.dateOfIncident,
+      required this.fileRef});
+}
 
 class EventComplete extends AddCaseEvent {}

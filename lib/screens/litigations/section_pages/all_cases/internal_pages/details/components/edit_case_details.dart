@@ -598,7 +598,7 @@ class _EditCaseDetailsState extends State<EditCaseDetails> {
                           context
                               .read<AddCaseBloc>()
                               .add(EventAddPriority(priority: priority));
-                          context.read<AddCaseBloc>().add(EventSubmitted());
+                          // context.read<AddCaseBloc>().add(EventSubmitted());
                           setState(() {});
                         },
                         child: InkWell(
