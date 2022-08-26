@@ -233,11 +233,11 @@ class CaseCard extends StatelessWidget {
                                 element.id.contains(caseId.toString()))
                               allow = true;
                           });
-                          if (allow)
+                          // if (allow)
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const ChatPage(
+                                    builder: (context) =>  ChatPage(
                                         collectionName: 'alertChats',
                                         peerNickname: 'POLICE',
                                         peerAvatar:
@@ -245,11 +245,11 @@ class CaseCard extends StatelessWidget {
                                         peerId: 'POLICE',
                                         userAvatar:
                                             'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
-                                        tipID: '2')));
-                          else
-                            Fluttertoast.showToast(
-                                msg:
-                                    "You can share information once the police initiates a chat session.");
+                                        tipID: caseId.toString())));
+                          // else
+                          //   Fluttertoast.showToast(
+                          //       msg:
+                          //           "You can share information once the police initiates a chat session.");
                         },
                         buttonColor: AppColors.primary,
                         buttonIcon: AppIcons.addButton,

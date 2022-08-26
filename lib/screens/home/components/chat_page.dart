@@ -588,7 +588,7 @@ class ChatMessages {
   factory ChatMessages.fromDocument(DocumentSnapshot documentSnapshot) {
     String idFrom = documentSnapshot.get("idFrom");
     String idTo = documentSnapshot.get("idTo");
-    String timestamp = documentSnapshot.get("timestamp");
+    String timestamp = documentSnapshot.get("timestamp").toString();
     String content = documentSnapshot.get("content");
     int type = documentSnapshot.get("type");
 

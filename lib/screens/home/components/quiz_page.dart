@@ -53,27 +53,30 @@ class _QuizPageState extends State<QuizPage> {
       final SharedPreferences _prefs = await SharedPreferences.getInstance();
       Response response = await dio.post('https://tip100.herokuapp.com/addTip',
           data: widget.payLoad);
-
+print(response.data);
       print("Loading");
       try {
-        Response response2 =
-            await dio.post('http://192.168.137.1:5000/get_Trust_Score',
-                // 'http://127.0.0.1:5000/get_Trust_Score',
-                data: widget.scorePayLoad
-                // data: {
-                //   "crime": context
-                //       .read<AddCaseBloc>()
-                //       .state
-                //       .crimeType,
-                //   "text": summaryController.text,
-                //   "state": "Pondicherry",
-                //   "tipIndex": "3",
-                //   "district": "Pondicherry",
-                //   if (audioURL != "") "audio": audioURL,
-                //   if (fileURL != "") "video": fileURL,
-                // }
-                );
-        print(response2.data);
+        print("Loading");
+        // Response response2 =
+        //     await dio.post(
+        //         'http://192.168.137.1:5000/get_Trust_Score',
+        //         // 'http://127.0.0.1:5000/get_Trust_Score',
+        //         data: widget.scorePayLoad
+        //         // data: {
+        //         //   "crime": context
+        //         //       .read<AddCaseBloc>()
+        //         //       .state
+        //         //       .crimeType,
+        //         //   "text": summaryController.text,
+        //         //   "state": "Pondicherry",
+        //         //   "tipIndex": "3",
+        //         //   "district": "Pondicherry",
+        //         //   if (audioURL != "") "audio": audioURL,
+        //         //   if (fileURL != "") "video": fileURL,
+        //         // }
+        //         );
+        // print(response2.data);
+
       } catch (e) {
         print(e);
       }

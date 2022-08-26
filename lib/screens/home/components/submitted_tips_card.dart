@@ -221,7 +221,7 @@ class SubmittedTipsCard extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const ChatPage(
+                                        builder: (context) =>   ChatPage(
                                             collectionName: "messages",
                                             peerNickname: 'POLICE',
                                             peerAvatar:
@@ -229,7 +229,7 @@ class SubmittedTipsCard extends StatelessWidget {
                                             peerId: 'POLICE',
                                             userAvatar:
                                                 'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
-                                            tipID: '2')));
+                                            tipID: caseId.toString())));
                               },
                               buttonColor: AppColors.primary,
                               buttonIcon: AppIcons.addButton,

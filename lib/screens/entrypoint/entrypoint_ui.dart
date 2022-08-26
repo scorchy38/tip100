@@ -4,6 +4,7 @@ import 'package:tip100/core/components/text_field.dart';
 import 'package:tip100/core/constants/app_colors.dart';
 import 'package:tip100/core/constants/app_defaults.dart';
 import 'package:tip100/core/constants/app_images.dart';
+import 'package:tip100/languages/languages.dart';
 import 'package:tip100/logic/bloc/dashboard_graphs_bloc/basic_graphs_bloc.dart';
 import 'package:tip100/logic/bloc/singin_repository.dart';
 import 'package:tip100/screens/home/components/chat_page.dart';
@@ -19,6 +20,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
 import '../../core/constants/app_icons.dart';
+import '../../languages/local_constants.dart';
 import '../../size_config.dart';
 import '../home/home_page.dart';
 import '../litigations/section_pages/all_cases/all_cases.dart';
@@ -57,7 +59,7 @@ class _EntryPointUIState extends State<EntryPointUI> {
   }
 
   final List<Widget> _screens = [
-    const HomePage(),
+     HomePage(),
     const AllCasesPage(),
     // const ChatPage(
     //     peerNickname: 'POLICE',

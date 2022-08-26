@@ -7,6 +7,8 @@ import 'package:tip100/core/constants/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../../../../languages/local_constants.dart';
+
 class RenameSheet extends StatefulWidget {
   const RenameSheet({Key? key}) : super(key: key);
 
@@ -36,7 +38,7 @@ class RenameSheetState extends State<RenameSheet> {
                 AppLargeDropdown(
                     width: 300,
                     dropdownValue: 'English',
-                    values: ['English', 'Hindi'],
+                    values: ['English', 'Tamil'],
                     controller: priorityController,
                     label: 'English'),
                 SizedBox(
@@ -59,9 +61,11 @@ class RenameSheetState extends State<RenameSheet> {
                     ),
                     InkWell(
                       onTap: () async {
-                        final preferences =
-                            await StreamingSharedPreferences.instance;
-                        preferences.setString('token', ' ');
+                        var locale = await getLocale();
+                        print(locale.languageCode);
+                        locale.languageCode == 'ta'
+                            ? changeLanguage(context, 'en')
+                            : changeLanguage(context, 'ta');
                         Navigator.pop(context);
                       },
                       child: Padding(
@@ -71,17 +75,14 @@ class RenameSheetState extends State<RenameSheet> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           elevation: 4,
-                          color: AppColors.appBlue,
+                          color: AppColors.primary,
                           child: Padding(
                             padding: const EdgeInsets.all(14.0),
                             child: Row(
                               children: [
-                                SvgPicture.asset(AppIcons.save),
-                                SizedBox(
-                                  width: 10,
-                                ),
+
                                 Text(
-                                  'Save Changes',
+                                  'Change',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge

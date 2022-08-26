@@ -33,8 +33,10 @@ import 'package:tip100/screens/home/components/chat_page.dart';
 import 'package:tip100/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'languages/local_constants.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/themes/app_themes.dart';
+import 'languages/localization_delegates.dart';
 import 'logic/bloc/all_cases_filters_bloc/all_cases_filters_bloc.dart';
 import 'logic/bloc/cause_list_free_text_bloc/cause_list_free_text_bloc.dart';
 import 'logic/bloc/cause_list_pdf_bloc/cause_list_pdf_bloc.dart';
@@ -53,11 +55,40 @@ void main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({this.pref, Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
   SharedPreferences? prefs;
   StreamingSharedPreferences? pref;
+  MyApp({this.pref, Key? key}) : super(key: key);
 
+
+
+  static void setLocale(BuildContext context, Locale newLocale) {
+    var state = context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
+
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale =  Locale('en', '');
+  @override
+  void didChangeDependencies() async {
+    getLocale().then((locale) {
+      setState(() {
+        _locale = locale;
+      });
+    });
+    super.didChangeDependencies();
+  }
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
   FirebaseFirestore? firebaseFirestore = FirebaseFirestore.instance;
   FirebaseStorage? firebaseStorage = FirebaseStorage.instance;
   @override
@@ -219,15 +250,32 @@ class MyApp extends StatelessWidget {
                     firebaseStorage: firebaseStorage!,
                     firebaseFirestore: firebaseFirestore!))
           ],
-          child: MaterialApp(
-            title: 'TIP100',
-            theme: AppThemes.light,
-            home: EntryPointUI(
-              pref: pref,
-            ),
-          ),
+
+        child: MaterialApp(
+          locale: _locale,
+          supportedLocales: const [Locale('en', ''), Locale('ta', '')],
+          localizationsDelegates: [
+            AppLocalizationsDelegate(),
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale?.languageCode == locale?.languageCode &&
+                  supportedLocale?.countryCode == locale?.countryCode) {
+                return supportedLocale;
+              }
+            }
+            return supportedLocales?.first;
+          },
+          title: 'TIP100',
+          theme: AppThemes.light,
+          home:  EntryPointUI(
+           pref: widget.pref,
+  ),
         ),
       ),
-    );
+    ));
   }
 }

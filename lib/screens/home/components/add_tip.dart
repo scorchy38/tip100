@@ -836,8 +836,14 @@ class _AddTipState extends State<AddTip> {
                                               .state
                                               .crimeType,
                                           "description": summaryController.text,
-                                          "mediaURL": [fileURL, audioURL],
-                                          "urgency": context
+                                          "mediaURL": fileURL == '' &&
+                                              audioURL == ''
+                                              ? []
+                                              : fileURL != '' && audioURL != ''
+                                              ? [fileURL, audioURL]
+                                              : fileURL != ''
+                                              ? [fileURL]
+                                              : [audioURL],                                          "urgency": context
                                               .read<AddCaseBloc>()
                                               .state
                                               .priority,
@@ -851,7 +857,7 @@ class _AddTipState extends State<AddTip> {
                                           "score": "0",
                                           "uid": "${_prefs.getString('token')}",
                                           "userScore":
-                                              "${_prefs.getString('score')}",
+                                              "${_prefs.getDouble('score')}",
                                           "address": locationController.text
                                         },
                                         scorePayLoad: {
@@ -865,7 +871,14 @@ class _AddTipState extends State<AddTip> {
                                               "https://firebasestorage.googleapis.com/v0/b/fitnessaddictiongym-d43c4.appspot.com/o/gettysburg.wav?alt=media&token=62323142-1138-4b23-93e8-ab51db58f8d2",
                                           "tipIndex": "4"
                                         },
-                                        type: "Violent crimes",
+                                        // type: context
+                                        // .read<AddCaseBloc>()
+                                        // .state
+                                        // .crimeType=="Rape"?"rape1":context
+                                        //     .read<AddCaseBloc>()
+                                        //     .state
+                                        //     .crimeType=="Drugs"?"rape":"Violent crimes"
+                                     type:   "Violent crimes",
                                         // type: context
                                         //     .read<AddCaseBloc>()
                                         //     .state

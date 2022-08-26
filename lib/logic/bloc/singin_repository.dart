@@ -20,7 +20,7 @@ class SigninRepository {
         var resData = response.data;
 
         res = "success";
-
+print(resData.toString());
         final SharedPreferences _prefs = await SharedPreferences.getInstance();
         _prefs.setString("token", resData.toString());
         preferences.setString('token', resData.toString());
@@ -34,8 +34,8 @@ class SigninRepository {
           res = "success";
           resData2.forEach((element) {
             if (element['uid'] == resData.toString()) {
-              _prefs.setString("score", element['score']);
-              preferences.setString('score', element['score']);
+              _prefs.setDouble("score", element['score']);
+              preferences.setDouble('score', element['score']);
             }
           });
 
@@ -84,8 +84,9 @@ class SigninRepository {
           res = "success";
           resData2.forEach((element) {
             if (element['uid'] == resData.toString()) {
-              _prefs.setString("score", element['score']);
-              preferences.setString('score', element['score']);
+              _prefs.setDouble("score", element['score']);
+              preferences.setDouble('score', element['score']);
+              print(element['score'].runtimeType);
             }
           });
 
