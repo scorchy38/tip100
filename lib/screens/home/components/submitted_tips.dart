@@ -128,8 +128,7 @@ class _SubmittedTipsState extends State<SubmittedTips> {
                                       bottom:
                                           index == cases!.length - 1 ? 60 : 0),
                                   child: SubmittedTipsCard(
-                                    caseNumber:
-                                        '${cases[index].case_no!}  $index',
+                                    caseNumber: '${cases[index].case_no!}',
                                     complaint: cases[index].title!,
                                     court: cases[index].court_name!,
                                     caseStage: cases[index].stage!,
@@ -138,6 +137,9 @@ class _SubmittedTipsState extends State<SubmittedTips> {
                                     ndohRemark: cases[index].ndoh!.remarks!,
                                     caseId: cases[index].case_id!,
                                     mediaURL: cases[index].mediaURL!,
+                                    dateOfIncident:
+                                        cases[index].dateOfIncident!,
+                                    view: cases[index].view!,
                                   ),
                                 ));
                       },

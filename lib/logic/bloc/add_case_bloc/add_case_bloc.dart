@@ -47,6 +47,9 @@ class AddCaseBloc extends Bloc<AddCaseEvent, AddCaseState> {
     } else if (event is EventAddCity) {
       print(event.city);
       yield state.copyWith(city: event.city);
+    } else if (event is EventAddCrimeType) {
+      print(event.crimeType);
+      yield state.copyWith(crimeType: event.crimeType);
     } else if (event is EventAddDescription) {
       print(event.description);
       yield state.copyWith(description: event.description);

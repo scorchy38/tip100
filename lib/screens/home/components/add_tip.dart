@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -7,8 +8,12 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tip100/core/components/dropdown.dart';
+import 'package:path_provider/path_provider.dart';
+
 import 'package:tip100/core/components/dropdown_large.dart';
 import 'package:tip100/core/components/text_field.dart';
 import 'package:tip100/core/constants/app_colors.dart';
@@ -20,6 +25,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:path/path.dart' as p;
+import 'package:tip100/screens/home/components/add_audio_tip.dart';
+import 'package:tip100/screens/home/components/quiz_page.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../core/constants/app_icons.dart';
@@ -46,6 +53,8 @@ class _AddTipState extends State<AddTip> {
   TextEditingController priorityController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController courtController = TextEditingController();
+  final soundRecorderAndPlayer = SoundRecorderAndPlayer();
+  bool isRecording = false, isRecorded = false;
   int type = MAXINT, court = MAXINT, city = MAXINT;
   String priority = 'NULL';
   List typeMaps = [],
@@ -60,7 +69,9 @@ class _AddTipState extends State<AddTip> {
   bool active = false;
   bool activeStart = false;
   bool docSelected = false;
+  bool audioSelected = false;
   String setIcon = 'doc';
+  String category = '';
   Map icons = {
     'doc': SvgPicture.asset('assets/icon/doc.svg'),
     'pdf': SvgPicture.asset('assets/icon/pdf.svg'),
@@ -144,6 +155,34 @@ class _AddTipState extends State<AddTip> {
     );
   }
 
+  Future<bool> _hasAcceptedPermissions() async {
+    if (Platform.isAndroid) {
+      await Permission.storage.request();
+      await Permission.accessMediaLocation.request();
+      await Permission.manageExternalStorage.request();
+      if (await Permission.storage.isGranted &&
+          // access media location needed for android 10/Q
+          await Permission.accessMediaLocation.isGranted &&
+          // manage external storage needed for android 11/R
+          await Permission.manageExternalStorage.isGranted) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    // if (Platform.isIOS) {
+    //   if (await _requestPermission(Permission.photos)) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // }
+    else {
+      // not android or ios
+      return false;
+    }
+  }
+
   Future<void> _handlePressButton() async {
     // show input autocomplete with selected mode
     // then get the Prediction selected
@@ -186,6 +225,17 @@ class _AddTipState extends State<AddTip> {
         SnackBar(content: Text("${p.description} - $lat/$lng")),
       );
     }
+  }
+
+  String globalPath = '';
+
+  @override
+  void initState() {
+    globalPath = randomAlphaNumeric(10);
+    _hasAcceptedPermissions();
+    soundRecorderAndPlayer.init("TIP");
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -264,6 +314,7 @@ class _AddTipState extends State<AddTip> {
           categoryMaps = [
             {'name': 'Minor Crimes'},
             {'name': 'Assault'},
+            {'name': 'Drugs'},
             {'name': 'Rape'},
             {'name': 'Murder'},
           ];
@@ -577,6 +628,123 @@ class _AddTipState extends State<AddTip> {
                             ],
                           ),
                         ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  !isRecording && !isRecorded
+                      ? CTABlueButtons(
+                          buttonColor: AppColors.primary,
+                          buttonIcon: AppIcons.addButton,
+                          buttonText: 'Record Supporting Audio',
+                          onTap: () async {
+                            Directory directory;
+
+                            directory = (await getExternalStorageDirectory())!;
+                            String newPath = "";
+                            List<String> paths = directory.path.split("/");
+                            for (int x = 1; x < paths.length; x++) {
+                              String folder = paths[x];
+                              if (folder != "Android") {
+                                newPath += "/" + folder;
+                              } else {
+                                break;
+                              }
+                            }
+                            String fileName = 'Recording-Varta-' +
+                                "TIP" +
+                                '-' +
+                                globalPath +
+                                '.aac';
+                            newPath = newPath + "/Vaarta/Recordings";
+                            directory = Directory(newPath);
+                            File saveFile = File(directory.path + "/$fileName");
+                            if (!await directory.exists()) {
+                              await directory.create(recursive: true);
+                            }
+                            if (await directory.exists()) {
+                              log(newPath + fileName);
+                              soundRecorderAndPlayer
+                                  .startRecording(saveFile.path);
+                            }
+                            setState(() {
+                              isRecording = true;
+                            });
+                            print('Recording-Varta-' +
+                                "TIP" +
+                                '-' +
+                                globalPath +
+                                '.aac');
+                          },
+                          width: 262)
+                      : isRecording && !isRecorded
+                          ? CTABlueButtons(
+                              buttonColor: AppColors.primary,
+                              buttonIcon: AppIcons.save,
+                              buttonText: 'Audio Recording',
+                              onTap: () async {
+                                soundRecorderAndPlayer.stopRecording();
+
+                                setState(() {
+                                  isRecording = true;
+                                  isRecorded = true;
+                                });
+                                print('Recording-Varta-' +
+                                    "TIP" +
+                                    '-' +
+                                    globalPath +
+                                    '.aac');
+                              },
+                              width: 262)
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      icons[setIcon],
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Container(
+                                        width: 300,
+                                        child: Text(
+                                          'Recording-Varta-' +
+                                              "TIP" +
+                                              '-' +
+                                              globalPath +
+                                              '.aac',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge
+                                              ?.copyWith(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: AppColors.appGrey,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 16.0),
+                                    child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            isRecorded = false;
+                                            isRecording = false;
+                                          });
+                                        },
+                                        child: SmallButtonTransparent(
+                                            buttonColor: AppColors.appRed,
+                                            buttonIcon: AppIcons.delete)),
+                                  )
+                                ],
+                              ),
+                            ),
                   Spacer(),
                   Container(
                     height: getProportionateScreenHeight(96),
@@ -611,10 +779,13 @@ class _AddTipState extends State<AddTip> {
                           ),
                           InkWell(
                             onTap: () async {
+                              final SharedPreferences _prefs =
+                                  await SharedPreferences.getInstance();
                               setState(() {
                                 submitting = !submitting;
                               });
                               String fileURL = '';
+                              String audioURL = '';
                               if (file.path != '') {
                                 final storageRef =
                                     FirebaseStorage.instance.ref();
@@ -629,52 +800,144 @@ class _AddTipState extends State<AddTip> {
 
                                 fileURL = await fileRef.getDownloadURL();
                               } else {}
-                              // context.read<AddCaseBloc>().add(EventSubmitted(
-                              //     crimeCategory: crimeCategoryController.text,
-                              //     location: locationController.text,
-                              //     priority: priorityController.text,
-                              //     description: summaryController.text,
-                              //     time:
-                              //         "${selectedStartDate!.day}/${selectedStartDate!.month}/${selectedStartDate!.year}",
-                              //     crimeTime: timeController.text,
-                              //     dateOfIncident: selectedStartDate!
-                              //         .millisecondsSinceEpoch
-                              //         .toString(),
-                              //     fileRef: fileURL));
-                              Dio dio = Dio();
-                              final SharedPreferences _prefs =
-                                  await SharedPreferences.getInstance();
+                              if (isRecorded == true) {
+                                File audioFile = File(
+                                    "/storage/emulated/0/Vaarta/Recordings/" +
+                                        'Recording-Varta-' +
+                                        "TIP" +
+                                        '-' +
+                                        globalPath +
+                                        '.aac');
+                                final storageRef =
+                                    FirebaseStorage.instance.ref();
 
-                              Response response = await dio.post(
-                                  'https://tip100.herokuapp.com/addTip',
-                                  data: {
-                                    "crimeType": context
-                                        .read<AddCaseBloc>()
-                                        .state
-                                        .description,
-                                    "description": summaryController.text,
-                                    "mediaURL": [fileURL],
-                                    "urgency": context
-                                        .read<AddCaseBloc>()
-                                        .state
-                                        .priority,
-                                    "crimeTime":
-                                        context.read<AddCaseBloc>().state.title,
-                                    "dateOfIncident": selectedStartDate!
-                                        .millisecondsSinceEpoch
-                                        .toString(),
-                                    "score": "0",
-                                    "uid": "${_prefs.getString('token')}",
-                                    "address": locationController.text
-                                  });
-                              if (response.data['message'] ==
-                                  'A block is MINED') {
-                                Fluttertoast.showToast(
-                                    msg: 'Tip has been submitted anonymously!');
-                                Navigator.pop(context);
+                                final audioFileRef = storageRef.child(
+                                    'Recording-Varta-' +
+                                        "TIP" +
+                                        '-' +
+                                        globalPath +
+                                        '.aac');
+                                try {
+                                  await audioFileRef.putFile(audioFile);
+                                } on FirebaseException catch (e) {
+                                  print(e);
+                                  print("Error");
+                                }
+
+                                audioURL = await audioFileRef.getDownloadURL();
                               }
-                              // setState(() {});
+                              print(audioURL);
+
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => QuizPage(
+                                        payLoad: {
+                                          "crimeType": context
+                                              .read<AddCaseBloc>()
+                                              .state
+                                              .crimeType,
+                                          "description": summaryController.text,
+                                          "mediaURL": [fileURL, audioURL],
+                                          "urgency": context
+                                              .read<AddCaseBloc>()
+                                              .state
+                                              .priority,
+                                          "crimeTime": context
+                                              .read<AddCaseBloc>()
+                                              .state
+                                              .title,
+                                          "dateOfIncident": selectedStartDate!
+                                              .millisecondsSinceEpoch
+                                              .toString(),
+                                          "score": "0",
+                                          "uid": "${_prefs.getString('token')}",
+                                          "userScore":
+                                              "${_prefs.getString('score')}",
+                                          "address": locationController.text
+                                        },
+                                        scorePayLoad: {
+                                          "text": "Hello",
+                                          "state": "Pondicherry",
+                                          "district": "Pondicherry",
+                                          "crime": "ROBBERY",
+                                          "video":
+                                              "https://firebasestorage.googleapis.com/v0/b/fitnessaddictiongym-d43c4.appspot.com/o/WhatsApp%20Video%202022-08-22%20at%2012.19.20%20AM.mp4?alt=media&token=708e6ab1-fb21-46ba-b925-e12402b19571",
+                                          "audio":
+                                              "https://firebasestorage.googleapis.com/v0/b/fitnessaddictiongym-d43c4.appspot.com/o/gettysburg.wav?alt=media&token=62323142-1138-4b23-93e8-ab51db58f8d2",
+                                          "tipIndex": "4"
+                                        },
+                                        type: "Violent crimes",
+                                        // type: context
+                                        //     .read<AddCaseBloc>()
+                                        //     .state
+                                        //     .crimeType,
+                                      )));
                             },
+                            // onTap: () async {
+                            //   setState(() {
+                            //     submitting = !submitting;
+                            //   });
+                            //   String fileURL = '';
+                            //   if (file.path != '') {
+                            //     final storageRef =
+                            //         FirebaseStorage.instance.ref();
+                            //     final fileRef =
+                            //         storageRef.child(p.basename(file.path));
+                            //     try {
+                            //       await fileRef.putFile(file);
+                            //     } on FirebaseException catch (e) {
+                            //       print(e);
+                            //       print("Error");
+                            //     }
+                            //
+                            //     fileURL = await fileRef.getDownloadURL();
+                            //   } else {}
+                            //   // context.read<AddCaseBloc>().add(EventSubmitted(
+                            //   //     crimeCategory: crimeCategoryController.text,
+                            //   //     location: locationController.text,
+                            //   //     priority: priorityController.text,
+                            //   //     description: summaryController.text,
+                            //   //     time:
+                            //   //         "${selectedStartDate!.day}/${selectedStartDate!.month}/${selectedStartDate!.year}",
+                            //   //     crimeTime: timeController.text,
+                            //   //     dateOfIncident: selectedStartDate!
+                            //   //         .millisecondsSinceEpoch
+                            //   //         .toString(),
+                            //   //     fileRef: fileURL));
+                            //   Dio dio = Dio();
+                            //   final SharedPreferences _prefs =
+                            //       await SharedPreferences.getInstance();
+                            //
+                            //   Response response = await dio.post(
+                            //       'https://tip100.herokuapp.com/addTip',
+                            //       data: {
+                            //         "crimeType": context
+                            //             .read<AddCaseBloc>()
+                            //             .state
+                            //             .crimeType,
+                            //         "description": summaryController.text,
+                            //         "mediaURL": [fileURL],
+                            //         "urgency": context
+                            //             .read<AddCaseBloc>()
+                            //             .state
+                            //             .priority,
+                            //         "crimeTime":
+                            //             context.read<AddCaseBloc>().state.title,
+                            //         "dateOfIncident": selectedStartDate!
+                            //             .millisecondsSinceEpoch
+                            //             .toString(),
+                            //         "score": "0",
+                            //         "uid": "${_prefs.getString('token')}",
+                            //         "userScore": "${_prefs.getString('score')}",
+                            //         "address": locationController.text
+                            //       });
+                            //   if (response.data['message'] ==
+                            //       'A block is MINED') {
+                            //     Fluttertoast.showToast(
+                            //         msg: 'Tip has been submitted anonymously!');
+                            //     Navigator.pop(context);
+                            //   }
+                            //   // setState(() {});
+                            // },
                             child: Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),

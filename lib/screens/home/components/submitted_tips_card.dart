@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:tip100/core/components/card_tags.dart';
 import 'package:tip100/core/constants/app_colors.dart';
@@ -8,6 +9,7 @@ import 'package:tip100/screens/litigations/section_pages/case_explorer/component
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/components/icon_button_with_text.dart';
 import '../../../../../core/constants/app_icons.dart';
@@ -16,7 +18,8 @@ import 'chat_page.dart';
 
 class SubmittedTipsCard extends StatelessWidget {
   final String caseNumber, complaint, caseStage, court, pdoh, ndoh, ndohRemark;
-  final int caseId;
+  final int caseId, view;
+  final Timestamp dateOfIncident;
   final List mediaURL;
 
   const SubmittedTipsCard(
@@ -25,10 +28,12 @@ class SubmittedTipsCard extends StatelessWidget {
       required this.complaint,
       required this.court,
       required this.caseStage,
+      required this.dateOfIncident,
       required this.pdoh,
       required this.ndoh,
       required this.ndohRemark,
       required this.mediaURL,
+      required this.view,
       required this.caseId})
       : super(key: key);
   @override
@@ -145,7 +150,7 @@ class SubmittedTipsCard extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            pdoh,
+                            DateFormat.yMMMd().format(dateOfIncident.toDate()),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
@@ -210,26 +215,28 @@ class SubmittedTipsCard extends StatelessWidget {
                       SizedBox(
                         width: 6.7,
                       ),
-                      IconButtonWithText(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ChatPage(
-                                      collectionName: "messages",
-                                      peerNickname: 'POLICE',
-                                      peerAvatar:
-                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/Upplogo.png?alt=media&token=bad7f7fd-d75a-4764-9d6c-5e2d56a6e65c',
-                                      peerId: 'POLICE',
-                                      userAvatar:
-                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
-                                      tipID: '2')));
-                        },
-                        buttonColor: AppColors.primary,
-                        buttonIcon: AppIcons.addButton,
-                        icon: EvaIcons.infoOutline,
-                        buttonText: 'Messages',
-                      ),
+                      view == 1
+                          ? IconButtonWithText(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const ChatPage(
+                                            collectionName: "messages",
+                                            peerNickname: 'POLICE',
+                                            peerAvatar:
+                                                'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/Upplogo.png?alt=media&token=bad7f7fd-d75a-4764-9d6c-5e2d56a6e65c',
+                                            peerId: 'POLICE',
+                                            userAvatar:
+                                                'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
+                                            tipID: '2')));
+                              },
+                              buttonColor: AppColors.primary,
+                              buttonIcon: AppIcons.addButton,
+                              icon: EvaIcons.infoOutline,
+                              buttonText: 'Messages',
+                            )
+                          : Container(),
                     ],
                   )
                 ],

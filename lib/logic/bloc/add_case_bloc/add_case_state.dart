@@ -5,6 +5,7 @@ int MAXINT = 9223372036854775807;
 class AddCaseState {
   String priority;
   int case_type;
+  String crimeType;
   String title;
   int court;
   int city;
@@ -13,6 +14,7 @@ class AddCaseState {
   FormSubmissionStatus formSubmissionStatus;
   AddCaseState({
     this.priority = '',
+    this.crimeType = '',
     this.case_type = 0,
     this.court = 0,
     this.city = 0,
@@ -23,6 +25,7 @@ class AddCaseState {
   });
   AddCaseState copyWith({
     String? priority,
+    String? crimeType,
     int? case_type,
     int? court,
     int? city,
@@ -34,6 +37,7 @@ class AddCaseState {
     return AddCaseState(
       priority: priority ?? this.priority,
       case_type: case_type ?? this.case_type,
+      crimeType: crimeType ?? this.crimeType,
       court: court ?? this.court,
       city: city ?? this.city,
       title: title ?? this.title,
@@ -49,6 +53,7 @@ class AddCaseState {
       'case_type': case_type,
       'court': court,
       'city': city,
+      'crimeType': crimeType,
       'event_name': title,
       'description': description,
       'is_alloted': is_alloted,
@@ -59,6 +64,7 @@ class AddCaseState {
   factory AddCaseState.fromMap(Map<String, dynamic> map) {
     return AddCaseState(
       priority: map['priority'].toString(),
+      crimeType: map['crimeType'].toString(),
       case_type: map['case_type'],
       court: map['court'],
       city: map['city'],
@@ -74,7 +80,7 @@ class AddCaseState {
 
   @override
   String toString() {
-    return 'AddCaseState(priority: $priority, case_type: $case_type, court: $court, city: $city, description: $description, is_alloted: $is_alloted, formSubmissionStatus: $formSubmissionStatus)';
+    return 'AddCaseState(priority: $priority, case_type: $case_type, court: $court, city: $city, description: $description, is_alloted: $is_alloted, formSubmissionStatus: $formSubmissionStatus, crimeType: $crimeType)';
   }
 
   @override
@@ -88,6 +94,7 @@ class AddCaseState {
         other.city == city &&
         other.title == title &&
         other.description == description &&
+        other.crimeType == crimeType &&
         other.is_alloted == is_alloted &&
         other.formSubmissionStatus == formSubmissionStatus;
   }
@@ -100,6 +107,7 @@ class AddCaseState {
         city.hashCode ^
         title.hashCode ^
         description.hashCode ^
+        crimeType.hashCode ^
         is_alloted.hashCode ^
         formSubmissionStatus.hashCode;
   }

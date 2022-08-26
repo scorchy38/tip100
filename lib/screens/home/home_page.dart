@@ -9,6 +9,7 @@ import 'package:tip100/core/components/small_button.dart';
 import 'package:tip100/core/constants/app_colors.dart';
 import 'package:tip100/core/constants/app_icons.dart';
 import 'package:tip100/logic/bloc/dashboard_graphs_bloc/basic_graphs_bloc.dart';
+import 'package:tip100/screens/home/components/add_audio_tip.dart';
 import 'package:tip100/screens/home/components/add_tip.dart';
 import 'package:tip100/screens/home/components/bar_chart.dart';
 import 'package:tip100/screens/home/components/bar_chart_expanded_card.dart';
@@ -30,6 +31,7 @@ import '../../core/constants/app_illustrations.dart';
 import '../../logic/bloc/all_cases_bloc/all_cases_bloc.dart';
 import '../../size_config.dart';
 import '../entrypoint/entrypoint_ui.dart';
+import '../litigations/section_pages/all_cases/internal_pages/doc_storage/components/rename_bottom_sheet.dart';
 import 'components/filters.dart';
 import 'components/line_chart.dart';
 
@@ -242,7 +244,7 @@ class _HomePageState extends State<HomePage>
                                               lineHeight: 40.0,
                                               animationDuration: 1000,
                                               curve: Curves.linearToEaseOut,
-                                              percent: 0.27,
+                                              percent: 0,
                                               center: Text(
                                                 '0/100',
                                                 style: Theme.of(context)
@@ -349,6 +351,7 @@ class _HomePageState extends State<HomePage>
                                               animationDuration: 1000,
                                               curve: Curves.linearToEaseOut,
                                               percent: int.parse(score) / 100,
+                                              // percent: 0.27,
                                               center: Text(
                                                 '$score/100',
                                                 style: Theme.of(context)
@@ -490,56 +493,61 @@ class _HomePageState extends State<HomePage>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    //   child: InkWell(
-                    //     onTap: null,
-                    //     child: Container(
-                    //       width: 160,
-                    //       height: 120,
-                    //       decoration: BoxDecoration(
-                    //           boxShadow: [
-                    //             BoxShadow(
-                    //                 color:
-                    //                     Color(0xFF2236470D).withOpacity(0.05),
-                    //                 spreadRadius: 0,
-                    //                 blurRadius: 10)
-                    //           ],
-                    //           borderRadius:
-                    //               BorderRadius.all(Radius.circular(10)),
-                    //           color: AppColors.appRed.withOpacity(0.9)),
-                    //       child: Padding(
-                    //         padding: const EdgeInsets.symmetric(
-                    //             horizontal: 8, vertical: 16),
-                    //         child: Center(
-                    //           child: Column(
-                    //             crossAxisAlignment: CrossAxisAlignment.center,
-                    //             mainAxisAlignment: MainAxisAlignment.center,
-                    //             children: [
-                    //               Icon(
-                    //                 EvaIcons.alertTriangleOutline,
-                    //                 color: Colors.white,
-                    //               ),
-                    //               const SizedBox(
-                    //                 height: 10,
-                    //               ),
-                    //               Text(
-                    //                 'Emergency Tip',
-                    //                 style: Theme.of(context)
-                    //                     .textTheme
-                    //                     .bodyText1
-                    //                     ?.copyWith(
-                    //                         fontSize: 15,
-                    //                         color: AppColors.white,
-                    //                         fontWeight: FontWeight.bold),
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: InkWell(
+                        onTap: () {
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => RecorderExample()));
+                        },
+                        child: Container(
+                          width: 160,
+                          height: 120,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color:
+                                        Color(0xFF2236470D).withOpacity(0.05),
+                                    spreadRadius: 0,
+                                    blurRadius: 10)
+                              ],
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: AppColors.appRed.withOpacity(0.9)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 16),
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    EvaIcons.alertTriangleOutline,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    'Emergency Tip',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        ?.copyWith(
+                                            fontSize: 15,
+                                            color: AppColors.white,
+                                            fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: InkWell(
@@ -553,7 +561,8 @@ class _HomePageState extends State<HomePage>
                                   builder: (context) => const SubmittedTips()));
                         },
                         child: Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
+                          width: 160,
+                          // width: MediaQuery.of(context).size.width * 0.9,
                           height: 120,
                           decoration: BoxDecoration(
                               boxShadow: [
@@ -582,7 +591,8 @@ class _HomePageState extends State<HomePage>
                                     height: 10,
                                   ),
                                   Text(
-                                    'Messages & Submitted Tips',
+                                    'Messages &\nSubmitted Tips',
+                                    textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyText1
@@ -606,7 +616,13 @@ class _HomePageState extends State<HomePage>
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: InkWell(
-                    onTap: null,
+                    onTap: () {
+                      showModalBottomSheet(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          context: context,
+                          builder: (context) => RenameSheet());
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                           boxShadow: [

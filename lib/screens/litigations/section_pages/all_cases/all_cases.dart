@@ -315,11 +315,9 @@ class _AllCasesPageState extends State<AllCasesPage> {
                               log(cases![index].city.toString());
                               return Padding(
                                 padding: EdgeInsets.only(
-                                    bottom:
-                                        index == cases!.length - 1 ? 60 : 0),
+                                    bottom: index == cases.length - 1 ? 60 : 0),
                                 child: CaseCard(
-                                  caseNumber:
-                                      '${cases[index].case_no!}  $index',
+                                  caseNumber: '${cases[index].case_no!}',
                                   complaint: cases[index].title!,
                                   court: cases[index].court_name!,
                                   caseStage: cases[index].stage!,

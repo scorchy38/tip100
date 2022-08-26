@@ -531,6 +531,12 @@ class ChatProvider {
 
   void sendChatMessage(String content, int type, String groupChatId,
       String currentUserId, String peerId, String collectionName) {
+    DocumentReference documentReference2 =
+        firebaseFirestore.collection(collectionName).doc(groupChatId);
+
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.set(documentReference2, {"id": "id"});
+    });
     DocumentReference documentReference = firebaseFirestore
         .collection(collectionName)
         .doc(groupChatId)

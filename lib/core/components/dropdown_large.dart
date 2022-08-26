@@ -85,24 +85,26 @@ class _AppLargeDropdownState extends State<AppLargeDropdown> {
                     widget.dropdownValue = newValue ?? widget.dropdownValue;
                     widget.controller?.text =
                         (newValue ?? widget.dropdownValue)!;
-                    if (widget.label == 'Crime Category')
-                      context.read<AddCaseBloc>().add(EventAddDescription(
-                          description: widget.controller!.text));
-                    else if (widget.label == 'Priority(Optional)')
+                    if (widget.label == 'Crime Category') {
+                      context.read<AddCaseBloc>().add(EventAddCrimeType(
+                          crimeType: widget.controller!.text));
+                      // print(context.read<AddCaseBloc>().state.crimeType);
+                      // print("Added");
+                    } else if (widget.label == 'Priority(Optional)')
                       context.read<AddCaseBloc>().add(
                           EventAddPriority(priority: widget.controller!.text));
                     else if (widget.label == 'Time(Optional)')
                       context
                           .read<AddCaseBloc>()
                           .add(EventAddTitle(title: widget.controller!.text));
-                    if (widget.controller?.text.compareTo(widget.label!) == 0)
-                      context
-                          .read<SwitchCubit>()
-                          .toggleFilter(widget.label!, true);
-                    else
-                      context
-                          .read<SwitchCubit>()
-                          .toggleFilter(widget.label!, false);
+                    // if (widget.controller?.text.compareTo(widget.label!) == 0)
+                    //   context
+                    //       .read<SwitchCubit>()
+                    //       .toggleFilter(widget.label!, true);
+                    // else
+                    //   context
+                    //       .read<SwitchCubit>()
+                    //       .toggleFilter(widget.label!, false);
                   });
                 },
                 underline: DropdownButtonHideUnderline(

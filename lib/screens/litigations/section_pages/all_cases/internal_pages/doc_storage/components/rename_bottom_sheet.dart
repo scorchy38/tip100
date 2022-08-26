@@ -1,3 +1,5 @@
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
+import 'package:tip100/core/components/dropdown_large.dart';
 import 'package:tip100/core/components/text_field.dart';
 import 'package:tip100/core/constants/app_colors.dart';
 import 'package:tip100/core/constants/app_defaults.dart';
@@ -16,12 +18,14 @@ class RenameSheetState extends State<RenameSheet> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController priorityController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Container(
-        height: 180,
+        height: 190,
         child: Scaffold(
           backgroundColor: AppColors.offWhite,
           body: Padding(
@@ -29,7 +33,12 @@ class RenameSheetState extends State<RenameSheet> {
                 horizontal: AppDefaults.padding, vertical: 25),
             child: Column(
               children: [
-                AppTextField(false, titleController, 'Rename Folder', 1.2),
+                AppLargeDropdown(
+                    width: 300,
+                    dropdownValue: 'English',
+                    values: ['English', 'Hindi'],
+                    controller: priorityController,
+                    label: 'English'),
                 SizedBox(
                   height: 20,
                 ),
@@ -48,35 +57,41 @@ class RenameSheetState extends State<RenameSheet> {
                             fontSize: 15),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 1.0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        elevation: 4,
-                        color: (titleController.value.text.length > 2)
-                            ? AppColors.appBlue
-                            : AppColors.appGrey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(14.0),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(AppIcons.save),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Save Changes',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(
-                                        color: AppColors.white,
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 15),
-                              ),
-                            ],
+                    InkWell(
+                      onTap: () async {
+                        final preferences =
+                            await StreamingSharedPreferences.instance;
+                        preferences.setString('token', ' ');
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 1.0),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          elevation: 4,
+                          color: AppColors.appBlue,
+                          child: Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(AppIcons.save),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Save Changes',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(
+                                          color: AppColors.white,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 15),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

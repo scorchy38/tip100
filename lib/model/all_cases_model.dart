@@ -26,6 +26,8 @@ Map m = {
 
 class AllCasesModel {
   int? case_id;
+  int? view;
+
   String? case_no;
   String? title;
   DOH? ndoh;
@@ -70,7 +72,8 @@ class AllCasesModel {
       this.ticket_active,
       this.mediaURL,
       this.dateOfIncident,
-      this.tracking});
+      this.tracking,
+      this.view});
 
   AllCasesModel.fromJson(Map<String, dynamic> json) {
     case_id = json['index'];
@@ -87,6 +90,7 @@ class AllCasesModel {
     type = "null";
     court_name = json['description'].toString();
     mediaURL = json['mediaURL'];
+    view = json['view'];
     dateOfIncident =
         Timestamp.fromMillisecondsSinceEpoch(int.parse(json['dateOfIncident']));
     case_active = true;
@@ -102,6 +106,8 @@ class AllCasesModel {
     data['case_id'] = this.case_id;
     data['case_no'] = this.case_no;
     data['title'] = this.title;
+    data['view'] = this.view;
+
     data['ndoh'] = this.ndoh?.toJson();
     data['region'] = this.region;
     data['loan_no'] = this.loan_no;

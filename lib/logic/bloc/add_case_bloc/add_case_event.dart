@@ -10,6 +10,8 @@ class AddCaseInitial extends AddCaseEvent {
   int court;
   int city;
   String description;
+  String crimeType;
+
   bool is_alloted;
   FormSubmissionStatus formSubmissionStatus;
   AddCaseInitial({
@@ -19,6 +21,7 @@ class AddCaseInitial extends AddCaseEvent {
     required this.court,
     required this.city,
     required this.description,
+    required this.crimeType,
     required this.is_alloted,
     required this.formSubmissionStatus,
   });
@@ -34,6 +37,13 @@ class EventAddPriority extends AddCaseEvent {
   String priority;
   EventAddPriority({
     required this.priority,
+  });
+}
+
+class EventAddCrimeType extends AddCaseEvent {
+  String crimeType;
+  EventAddCrimeType({
+    required this.crimeType,
   });
 }
 

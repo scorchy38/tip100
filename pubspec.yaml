@@ -42,6 +42,12 @@ dependencies:
   syncfusion_flutter_gauges: ^20.1.57
   sticky_headers: ^0.2.0
   super_tooltip: ^1.0.1
+#  flutter_sound: ^8.1.9
+  permission_handler: ^8.1.2
+#  assets_audio_player: ^3.0.3+3
+#  audio_session: ^0.1.6
+
+  file: ^6.1.0
   searchfield: ^0.6.5
   dropdown_search: ^3.0.1
   customizable_multiselect_field: ^1.0.1
@@ -51,7 +57,10 @@ dependencies:
   fluttertoast: ^8.0.9
   flutter_datetime_picker: ^1.5.1
   timeline_list: ^0.0.6
+  flutter_sound_system: ^0.0.9
   path: ^1.8.0
+  random_string: ^2.3.1
+#  sound_recorder: ^0.0.2
 
 #  scrollable_positioned_list: ^0.3.2
 

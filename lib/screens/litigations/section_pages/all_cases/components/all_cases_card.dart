@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tip100/core/components/card_tags.dart';
 import 'package:tip100/core/constants/app_colors.dart';
 import 'package:tip100/core/constants/app_defaults.dart';
@@ -150,9 +152,7 @@ class CaseCard extends StatelessWidget {
                             height: 4,
                           ),
                           Text(
-                            DateFormat.yMMMd()
-                                .add_jm()
-                                .format(dateOfIncident.toDate()),
+                            DateFormat.yMMMd().format(dateOfIncident.toDate()),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
@@ -216,19 +216,40 @@ class CaseCard extends StatelessWidget {
                         width: 6.7,
                       ),
                       IconButtonWithText(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ChatPage(
-                                      collectionName: 'alertChats',
-                                      peerNickname: 'POLICE',
-                                      peerAvatar:
-                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/Upplogo.png?alt=media&token=bad7f7fd-d75a-4764-9d6c-5e2d56a6e65c',
-                                      peerId: 'POLICE',
-                                      userAvatar:
-                                          'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
-                                      tipID: '2')));
+                        onTap: () async {
+                          final SharedPreferences _prefs =
+                              await SharedPreferences.getInstance();
+
+                          bool allow = false;
+                          FirebaseFirestore firebaseFirestore =
+                              FirebaseFirestore.instance;
+
+                          QuerySnapshot query = await firebaseFirestore
+                              .collection("alertChats")
+                              .get();
+                          query.docs.forEach((element) {
+                            if (element.id
+                                    .contains("${_prefs.getString('token')}") &&
+                                element.id.contains(caseId.toString()))
+                              allow = true;
+                          });
+                          if (allow)
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ChatPage(
+                                        collectionName: 'alertChats',
+                                        peerNickname: 'POLICE',
+                                        peerAvatar:
+                                            'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/Upplogo.png?alt=media&token=bad7f7fd-d75a-4764-9d6c-5e2d56a6e65c',
+                                        peerId: 'POLICE',
+                                        userAvatar:
+                                            'https://firebasestorage.googleapis.com/v0/b/tip100-f1628.appspot.com/o/anonymous-user.png?alt=media&token=486e84c2-9a1c-4e0b-9c63-8b5e2615b61b',
+                                        tipID: '2')));
+                          else
+                            Fluttertoast.showToast(
+                                msg:
+                                    "You can share information once the police initiates a chat session.");
                         },
                         buttonColor: AppColors.primary,
                         buttonIcon: AppIcons.addButton,
